@@ -10,7 +10,9 @@ import {
   X, 
   Check, 
   Filter, 
-  RefreshCw 
+  RefreshCw,
+  ChevronLeft,
+  ChevronRight
 } from "lucide-react";
 
 const Customers = () => {
@@ -26,6 +28,10 @@ const Customers = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const token = localStorage.getItem("token");
+  
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [customersPerPage] = useState(5);
 
   // Ambil data pelanggan (dengan atau tanpa filter pencarian)
   const fetchCustomers = async (query = "") => {
@@ -37,7 +43,14 @@ const Customers = () => {
       const res = await axios.get(url, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setCustomers(res.data);
+      
+      // Urutkan pelanggan berdasarkan nama (A-Z)
+      const sortedCustomers = res.data.sort((a, b) => 
+        a.nama.localeCompare(b.nama, 'id', { sensitivity: 'base' })
+      );
+      
+      setCustomers(sortedCustomers);
+      setCurrentPage(1); // Reset ke halaman pertama setelah fetch data baru
     } catch (err) {
       console.error("Error fetching customers:", err);
     } finally {
@@ -124,8 +137,31 @@ const Customers = () => {
     setShowForm(false);
   };
 
+  // Pagination logic
+  const indexOfLastCustomer = currentPage * customersPerPage;
+  const indexOfFirstCustomer = indexOfLastCustomer - customersPerPage;
+  const currentCustomers = customers.slice(indexOfFirstCustomer, indexOfLastCustomer);
+  const totalPages = Math.ceil(customers.length / customersPerPage);
+
+  // Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  
+  // Go to next page
+  const nextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+  
+  // Go to previous page
+  const prevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
   return (
-    <div className="flex min-h-screen w-screen bg-gray-50">
+    <div className="flex h-min-screen w-screen bg-gray-50">
       <Sidebar />
       <div className="flex-1 flex flex-col">
         <Navbar />
@@ -320,7 +356,7 @@ const Customers = () => {
                       </td>
                     </tr>
                   ) : (
-                    customers.map((customer) => (
+                    currentCustomers.map((customer) => (
                       <tr key={customer.id} className="hover:bg-gray-50">
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="font-medium text-gray-900">{customer.nama}</div>
@@ -361,14 +397,53 @@ const Customers = () => {
               </table>
             </div>
             {customers.length > 0 && (
-              <div className="px-6 py-3 flex items-center justify-between border-t border-gray-200 bg-gray-50">
-                <div className="text-sm text-gray-500">
-                  Menampilkan {customers.length} pelanggan
+              <div className="px-6 py-3 flex flex-col sm:flex-row sm:items-center justify-between border-t border-gray-200 bg-gray-50">
+                <div className="text-sm text-gray-500 mb-2 sm:mb-0">
+                  Menampilkan {indexOfFirstCustomer + 1}-{Math.min(indexOfLastCustomer, customers.length)} dari {customers.length} pelanggan
                 </div>
                 <div className="flex items-center space-x-2">
-                  <button className="px-3 py-1 border border-gray-300 bg-white text-gray-700 rounded hover:bg-gray-50 text-sm">Sebelumnya</button>
-                  <button className="px-3 py-1 border border-blue-500 bg-blue-50 text-blue-600 rounded text-sm">1</button>
-                  <button className="px-3 py-1 border border-gray-300 bg-white text-gray-700 rounded hover:bg-gray-50 text-sm">Selanjutnya</button>
+                  <button 
+                    onClick={prevPage} 
+                    disabled={currentPage === 1}
+                    className={`px-3 py-1 border flex items-center ${
+                      currentPage === 1 
+                        ? "border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed" 
+                        : "border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+                    } rounded text-sm`}
+                  >
+                    <ChevronLeft size={16} className="mr-1" />
+                    Sebelumnya
+                  </button>
+                  
+                  {/* Page numbers */}
+                  <div className="flex items-center space-x-1">
+                    {[...Array(totalPages).keys()].map(number => (
+                      <button
+                        key={number + 1}
+                        onClick={() => paginate(number + 1)}
+                        className={`px-3 py-1 border rounded text-sm ${
+                          currentPage === number + 1
+                            ? "border-blue-500 bg-blue-50 text-blue-600"
+                            : "border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+                        }`}
+                      >
+                        {number + 1}
+                      </button>
+                    ))}
+                  </div>
+                  
+                  <button 
+                    onClick={nextPage} 
+                    disabled={currentPage === totalPages}
+                    className={`px-3 py-1 border flex items-center ${
+                      currentPage === totalPages 
+                        ? "border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed" 
+                        : "border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+                    } rounded text-sm`}
+                  >
+                    Selanjutnya
+                    <ChevronRight size={16} className="ml-1" />
+                  </button>
                 </div>
               </div>
             )}

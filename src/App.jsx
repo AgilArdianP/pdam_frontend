@@ -6,6 +6,8 @@ import Customers from "./pages/Customers";
 import Usage from "./pages/Usage";
 import Payments from "./pages/Payments";
 import Tagihan from "./pages/Tagihan";
+import Backup from "./pages/Backup";
+import TarifManagement from "./pages/TarifManagement";
 
 function App() {
   const [auth, setAuth] = useState(false);
@@ -63,6 +65,22 @@ function App() {
           element={
             <ProtectedRoute>
               <Tagihan />
+            </ProtectedRoute>
+          }
+        />
+        <Route 
+          path="/backup"
+          element={
+            <ProtectedRoute>
+              <Backup />
+            </ProtectedRoute>
+          }
+        />
+        <Route 
+          path="/tarifmanagement"
+          element={
+            <ProtectedRoute>
+              <TarifManagement />
             </ProtectedRoute>
           }
         />

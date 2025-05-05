@@ -101,37 +101,37 @@ const Dashboard = () => {
 
   const cards = [
     {
-      title: "Total Penggunaan",
+      title: "Jumlah Pemakaian Warga",
       value: `${stats.totalPenggunaan || 0}`,
       icon: <TrendingUp className="h-8 w-8 text-blue-500" />,
-      bgColor: "bg-blue-50",
+      bgColor: "bg-blue-100",
       textColor: "text-blue-700",
       borderColor: "border-blue-200",
       subtitle: `Bulan ${monthNames[bulan - 1]} ${tahun}`
     },
     {
-      title: "Total Tagihan",
-      value: `Rp ${formatCurrency(stats.totalTagihan || 0)}`,
-      icon: <CreditCard className="h-8 w-8 text-green-500" />,
-      bgColor: "bg-green-50",
+      title: "Total Pendapatan",
+      value: `Rp ${formatCurrency(stats.totalPembayaran || 0)}`,
+      icon: <CheckCircle className="h-8 w-8 text-green-500" />,
+      bgColor: "bg-green-100",
       textColor: "text-green-700",
       borderColor: "border-green-200",
       subtitle: `Bulan ${monthNames[bulan - 1]} ${tahun}`
     },
     {
-      title: "Total Pembayaran",
-      value: `Rp ${formatCurrency(stats.totalPembayaran || 0)}`,
-      icon: <CheckCircle className="h-8 w-8 text-purple-500" />,
-      bgColor: "bg-purple-50",
+      title: "Total Tagihan",
+      value: `Rp ${formatCurrency(stats.totalTagihan || 0)}`,
+      icon: <CreditCard className="h-8 w-8 text-purple-500" />,
+      bgColor: "bg-purple-100",
       textColor: "text-purple-700",
       borderColor: "border-purple-200",
       subtitle: `Bulan ${monthNames[bulan - 1]} ${tahun}`
     },
     {
-      title: "Outstanding",
+      title: "Yang Belum Dibayar",
       value: `Rp ${formatCurrency(stats.outstanding || 0)}`,
       icon: <AlertTriangle className="h-8 w-8 text-amber-500" />,
-      bgColor: "bg-amber-50",
+      bgColor: "bg-amber-100",
       textColor: "text-amber-700",
       borderColor: "border-amber-200",
       subtitle: `Bulan ${monthNames[bulan - 1]} ${tahun}`
@@ -178,7 +178,7 @@ const Dashboard = () => {
                 <div className="relative">
                   <button
                     onClick={() => setShowMonthDropdown(!showMonthDropdown)}
-                    className="flex items-center justify-between w-full min-w-40 border border-gray-300 bg-white p-2 rounded-lg shadow-sm hover:bg-gray-50"
+                    className="flex items-center justify-between w-full min-w-40 border border-gray-300 bg-black p-2 rounded-lg shadow-sm hover:bg-gray-500"
                   >
                     <div className="flex items-center">
                       <Calendar className="w-4 h-4 text-gray-500 mr-2" />
@@ -188,12 +188,12 @@ const Dashboard = () => {
                   </button>
                   
                   {showMonthDropdown && (
-                    <div className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-y-auto">
+                    <div className="absolute z-10 mt-1 w-full bg-black border border-gray-200 rounded-md shadow-lg max-h-60 overflow-y-auto">
                       {monthNames.map((month, index) => (
                         <button
                           key={index}
-                          className={`w-full text-left px-4 py-2 hover:bg-blue-50 ${
-                            bulan === index + 1 ? "bg-blue-100" : ""
+                          className={`w-full text-left px-4 py-2 hover:bg-gray-700 ${
+                            bulan === index + 1 ? "bg-gray-500" : ""
                           }`}
                           onClick={() => {
                             setBulan(index + 1);
@@ -374,7 +374,7 @@ const Dashboard = () => {
                   </span>
                   <span className="text-xs text-gray-500">
                     {monthNames[monthlyUsage.reduce((max, item) => 
-                      (item.total_penggunaan > (monthlyUsage[max]?.total_penggunaan || 0)) ? monthlyUsage.indexOf(item) : max, 0)].bulan - 1}
+                      (item.total_penggunaan > (monthlyUsage[max]?.total_penggunaan || 0)) ? monthlyUsage.indexOf(item) : max, 0)]}
                   </span>
                 </div>
                 

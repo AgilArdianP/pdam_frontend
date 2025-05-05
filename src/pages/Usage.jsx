@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
@@ -11,7 +11,9 @@ import {
   CheckCircle, 
   AlertCircle, 
   X, 
-  Info 
+  Info,
+  Search,
+  ChevronDown
 } from "lucide-react";
 
 const Usage = () => {
@@ -28,6 +30,12 @@ const Usage = () => {
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const token = localStorage.getItem("token");
+  
+  // Searchable dropdown states
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredCustomers, setFilteredCustomers] = useState([]);
+  const dropdownRef = useRef(null);
 
   // Fetch customers for dropdown selection
   useEffect(() => {
@@ -37,6 +45,7 @@ const Usage = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
         setPelangganList(res.data);
+        setFilteredCustomers(res.data);
       } catch (err) {
         console.error("Error fetching customers:", err);
       }
@@ -44,6 +53,34 @@ const Usage = () => {
 
     fetchPelanggan();
   }, [token]);
+
+  // Effect for handling clicks outside the dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  // Filter customers based on search term
+  useEffect(() => {
+    if (searchTerm.trim() === "") {
+      setFilteredCustomers(pelangganList);
+    } else {
+      const filtered = pelangganList.filter(
+        (customer) =>
+          customer.nama.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          (customer.alamat && customer.alamat.toLowerCase().includes(searchTerm.toLowerCase()))
+      );
+      setFilteredCustomers(filtered);
+    }
+  }, [searchTerm, pelangganList]);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -65,21 +102,22 @@ const Usage = () => {
       } else {
         setPreviewUrl(null);
       }
-    } else if (name === "pelanggan_id") {
-      setFormData({
-        ...formData,
-        [name]: value,
-      });
-      
-      // Find and set selected customer details
-      const customer = pelangganList.find(p => p.id === parseInt(value));
-      setSelectedCustomer(customer);
     } else {
       setFormData({
         ...formData,
         [name]: value,
       });
     }
+  };
+
+  const handleCustomerSelect = (customer) => {
+    setFormData({
+      ...formData,
+      pelanggan_id: customer.id.toString(),
+    });
+    setSelectedCustomer(customer);
+    setIsDropdownOpen(false);
+    setSearchTerm("");
   };
 
   const handleSubmit = async (e) => {
@@ -142,7 +180,7 @@ const Usage = () => {
   };
 
   return (
-    <div className="flex h-screen w-screen bg-gray-50">
+    <div className="flex h-min-screen w-screen bg-gray-50">
       <Sidebar />
       <div className="flex-1 flex flex-col">
         <Navbar />
@@ -188,26 +226,83 @@ const Usage = () => {
             
             <form onSubmit={handleSubmit} className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Customer Selection */}
+                {/* Searchable Customer Selection */}
                 <div className="space-y-2">
                   <label className="flex items-center text-sm font-medium text-gray-700">
                     <User size={16} className="mr-2 text-gray-500" />
                     Pelanggan
                   </label>
-                  <select
-                    name="pelanggan_id"
-                    value={formData.pelanggan_id}
-                    onChange={handleChange}
-                    className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    required
-                  >
-                    <option value="">-- Pilih Pelanggan --</option>
-                    {pelangganList.map(pelanggan => (
-                      <option key={pelanggan.id} value={pelanggan.id}>
-                        {pelanggan.nama} ({pelanggan.jenis_pelayanan})
-                      </option>
-                    ))}
-                  </select>
+                  <div className="relative bg-black rounded-lg" ref={dropdownRef}>
+                    <div 
+                      className={`flex items-center justify-between w-full border ${isDropdownOpen ? 'bg-black border-blue-500 ring-2 ring-blue-500' : 'border-gray-300'} rounded-lg p-2 cursor-pointer`}
+                      onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                    >
+                      <div className="flex-1 flex items-center w-full">
+                        {selectedCustomer ? (
+                          <span>{selectedCustomer.nama} ({selectedCustomer.jenis_pelayanan})</span>
+                        ) : (
+                          <span className="text-white">-- Pilih Pelanggan --</span>
+                        )}
+                      </div>
+                      <ChevronDown size={18} className="text-gray-500" />
+                    </div>
+                    
+                    {/* Hidden input for form submission */}
+                    <input
+                      type="hidden"
+                      name="pelanggan_id"
+                      value={formData.pelanggan_id}
+                      required
+                    />
+                    
+                    {isDropdownOpen && (
+                      <div className="absolute mt-1 w-full bg-black border border-gray-300 rounded-lg shadow-lg z-10">
+                        <div className="p-2 border-b border-gray-200 sticky top-0 bg-black">
+                          <div className="flex items-center bg-black rounded-md px-3 py-2">
+                            <Search size={16} className="text-white" />
+                            <input
+                              type="text"
+                              placeholder="Cari pelanggan..."
+                              className="ml-2 bg-transparent w-full border-none focus:outline-none focus:ring-0"
+                              value={searchTerm}
+                              onChange={(e) => setSearchTerm(e.target.value)}
+                              onClick={(e) => e.stopPropagation()}
+                            />
+                          </div>
+                        </div>
+                        
+                        <div className="max-h-60 overflow-y-auto py-1">
+                          {filteredCustomers.length > 0 ? (
+                            filteredCustomers.map((customer) => (
+                              <div
+                                key={customer.id}
+                                className={`px-4 py-2 cursor-pointer hover:bg-gray-400 flex justify-between items-center ${
+                                  selectedCustomer?.id === customer.id ? 'bg-blue-5300 text-blue-700' : ''
+                                }`}
+                                onClick={() => handleCustomerSelect(customer)}
+                              >
+                                <div>
+                                  <div className="font-medium">{customer.nama}</div>
+                                  <div className="text-sm text-gray-500">{customer.alamat}</div>
+                                </div>
+                                <span className={`ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                                  customer.jenis_pelayanan === "Reguler" 
+                                    ? "bg-blue-100 text-blue-800" 
+                                    : "bg-green-100 text-green-800"
+                                }`}>
+                                  {customer.jenis_pelayanan}
+                                </span>
+                              </div>
+                            ))
+                          ) : (
+                            <div className="px-4 py-3 text-sm text-gray-500 text-center">
+                              Tidak ada pelanggan yang ditemukan
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
                   
                   {/* Selected customer info */}
                   {selectedCustomer && (
@@ -271,7 +366,7 @@ const Usage = () => {
                     Foto Meteran
                   </label>
                   <div className="flex items-center">
-                    <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors">
+                    <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-300 hover:bg-gray-400 transition-colors">
                       <div className="flex flex-col items-center justify-center pt-5 pb-6">
                         <Upload size={24} className="text-gray-400 mb-2" />
                         <p className="text-sm text-gray-500">

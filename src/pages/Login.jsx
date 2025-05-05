@@ -7,8 +7,13 @@ const Login = ({ setAuth }) => {
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     const navigate = useNavigate();
+
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword)
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -16,7 +21,7 @@ const Login = ({ setAuth }) => {
         setError("");
         
         try {
-            const res = await axios.post("http://localhost:5000/api/auth/login", {
+            const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, {
                 username,
                 password,
             });
@@ -32,17 +37,25 @@ const Login = ({ setAuth }) => {
 
     return (
         <div className="flex h-screen w-screen">
-            <div className="hidden lg:flex lg:w-1/2 bg-blue-600 flex-col justify-center items-center p-12 text-white">
+            <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-b from-gray-400 to-blue-400 flex-col justify-center items-center p-12 text-white">
                 <div className="max-w-md">   
                     <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mb-8">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4" />
-                        </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="100" height="100">
+                        <defs>
+                            <linearGradient id="blueGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stop-color="#00BFFF"/>
+                                <stop offset="100%" stop-color="#1E90FF"/>
+                            </linearGradient>
+                        </defs>
+                        <path d="M32 4C20 20 12 30 12 42c0 11 9 18 20 18s20-7 20-18c0-12-8-22-20-38z"
+                        fill="url(#blueGradient)"/>
+                    </svg>
+
                     </div>
-                    <h1 className="text-4xl font-bold mb-4">Company Name</h1>
-                    <p className="text-xl mb-6">Welcome to our platform. Sign in to access your account and continue your journey.</p>
+                    <h1 className="text-4xl font-bold mb-4">PDAM Desa</h1>
+                    <p className="text-xl mb-6">Selamat Datang di Aplikasi Pengelolaan PDAM.</p>
                     <div className="bg-blue-500 p-6 rounded-lg">
-                        <p className="italic text-blue-100">"This is a place where you can add a testimonial, company mission statement, or any other important message you want users to see."</p>
+                        <p className="italic text-blue-100">"Kami hadir untuk melayani kebutuhan air bersih anda."</p>
                     </div>
                 </div>
             </div>
@@ -53,15 +66,23 @@ const Login = ({ setAuth }) => {
                     {/* Mobile logo (visible only on small screens) */}
                     <div className="lg:hidden flex justify-center mb-8">
                         <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4" />
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" viewBox="0 0 64 64">
+                                <defs>
+                                    <linearGradient id="dropGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                        <stop offset="0%" stopColor="white" stopOpacity="1"/>
+                                        <stop offset="100%" stopColor="white" stopOpacity="0.8"/>
+                                    </linearGradient>
+                                </defs>
+                                <path d="M32 4C20 20 12 30 12 42c0 11 9 18 20 18s20-7 20-18c0-12-8-22-20-38z"
+                                fill="url(#dropGradient)"/>
                             </svg>
                         </div>
                     </div>
 
+
                     <div className="text-center mb-8">
-                        <h2 className="text-3xl font-bold text-gray-800">Sign In</h2>
-                        <p className="text-gray-600 mt-2">Enter your credentials to access your account</p>
+                        <h2 className="text-3xl font-bold text-gray-800">Welcome</h2>
+                        <p className="text-gray-600 mt-2">Aplikasi Pengelolaan PDAM Desa</p>
                     </div>
                     
                     {error && (
@@ -73,7 +94,7 @@ const Login = ({ setAuth }) => {
                         </div>
                     )}
                     
-                    <form onSubmit={handleSubmit} className="space-y-6">
+                    <form onSubmit={handleSubmit} className="space-y-6 flex flex-col w-full h-full mt-6 bg-gray-200 p-10 md:p-6 rounded-lg shadow-md">
                         <div>
                             <label className="block text-gray-700 font-medium mb-2" htmlFor="username">
                                 Username
@@ -89,8 +110,8 @@ const Login = ({ setAuth }) => {
                                     type="text"
                                     value={username}
                                     onChange={(e) => setUsername(e.target.value)}
-                                    className="pl-10 w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                                    placeholder="Enter your username"
+                                    className="pl-10 w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition bg-black"
+                                    placeholder="Masukkan username anda"
                                     required
                                 />
                             </div>
@@ -110,18 +131,37 @@ const Login = ({ setAuth }) => {
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
                                         <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
                                     </svg>
-                                </div>
-                                <input 
-                                    id="password"
-                                    type="password"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    className="pl-10 w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                                    placeholder="Enter your password"
-                                    required
-                                />
                             </div>
+                            <input 
+                                id="password"
+                                type={showPassword ? "text" : "password"}
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                className="pl-10 pr-12 w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition bg-black"
+                                placeholder="Masukkan password anda"
+                                required
+                            />
+                            <button
+                                type="button"
+                                onClick={togglePasswordVisibility}
+                                className="absolute inset-y-1 right-0 pr-3 flex items-center text-white hover:text-gray-600 bg-black transition- focus:bg-gray-900"
+                            >
+                            {showPassword ? (
+                            // Icon when password is visible (Eye Slash)
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd" d="M3.707 2.293a1 1 0 00-1.414 1.414l14 14a1 1 0 001.414-1.414l-1.473-1.473A10.014 10.014 0 0019.542 10C18.268 5.943 14.478 3 10 3a9.958 9.958 0 00-4.512 1.074l-1.78-1.781zm4.261 4.26l1.514 1.515a2.003 2.003 0 012.45 2.45l1.514 1.514a4 4 0 00-5.478-5.478z" clipRule="evenodd" />
+                                <path d="M12.454 16.697L9.75 13.992a4 4 0 01-3.742-3.741L2.335 6.578A9.98 9.98 0 00.458 10c1.274 4.057 5.065 7 9.542 7 .847 0 1.669-.105 2.454-.303z" />
+                            </svg>
+                            ) : (
+                            // Icon when password is hidden (Eye)
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                                <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
+                            </svg>
+                            )}
+                            </button>
                         </div>
+                    </div>
                         
                         <div className="flex items-center">
                             <input

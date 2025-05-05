@@ -176,28 +176,19 @@ const Navbar = () => {
     };
 
     return (
-        <div className="w-full bg-white shadow-md px-6 py-3 flex justify-between items-center border-b border-gray-200 sticky top-0 z-10">
-            {/* Left side - empty for desktop, shown on mobile */}
-            <div className="lg:hidden text-xl font-bold text-blue-900">
-                PDAM Desa
+        <div className="w-full bg-gray-300 shadow-md px-6 py-3 flex justify-between items-center border-b border-gray-50 top-0 z-10 relative">
+            {/* Centered Title */}
+            <div className="lg:block absolute left-1/2 transform -translate-x-1/2 text-xl font-bold text-blue-900 text-center">
+                SaaS
             </div>
+
+
 
             {/* Right side - user controls */}
             <div className="flex-1 flex justify-end items-center space-x-4">
-                {/* Search - hidden on mobile */}
-                <div className="hidden md:flex relative">
-                    <input 
-                        type="text" 
-                        placeholder="Cari..." 
-                        className="px-4 py-2 pl-10 bg-gray-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white w-64"
-                    />
-                    <svg className="w-4 h-4 absolute left-3 top-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                    </svg>
-                </div>
 
                 {/* Notification bell */}
-                <div className="relative" ref={notificationRef}>
+                <div className="relativelg:block" ref={notificationRef}>
                     <button 
                         onClick={() => setNotificationsOpen(!notificationsOpen)}
                         className="p-2 text-gray-600 hover:text-blue-600 rounded-full hover:bg-blue-100 relative"
@@ -310,7 +301,7 @@ const Navbar = () => {
                             <a href="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                 Profil Saya
                             </a>
-                            <a href="/settings" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            <a href="/tarifmanagement" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                 Pengaturan
                             </a>
                             <div className="border-t border-gray-200 my-1"></div>
