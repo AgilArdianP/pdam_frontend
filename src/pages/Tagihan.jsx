@@ -50,7 +50,7 @@ const Tagihan = () => {
   const fetchUsages = async () => {
     setLoading(true);
     try {
-      const url = `http://localhost:5000/api/penggunaan/history?bulan=${filterMonth}&tahun=${filterYear}`;
+      const url = `${import.meta.env.VITE_API_URL}/api/penggunaan/history?bulan=${filterMonth}&tahun=${filterYear}`;
       const res = await axios.get(url, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -85,7 +85,7 @@ const Tagihan = () => {
     try {
       setIsExporting(true);
       const res = await axios.get(
-        `http://localhost:5000/api/tagihan/export/pdf?bulan=${filterMonth}&tahun=${filterYear}`,
+        `${import.meta.env.VITE_API_URL}/api/tagihan/export/pdf?bulan=${filterMonth}&tahun=${filterYear}`,
         {
           headers: { Authorization: `Bearer ${token}` },
           responseType: "blob",
@@ -111,7 +111,7 @@ const Tagihan = () => {
     try {
       setIsExporting(true);
       const res = await axios.get(
-        `http://localhost:5000/api/tagihan/export/excel?bulan=${filterMonth}&tahun=${filterYear}`,
+        `${import.meta.env.VITE_API_URL}/api/tagihan/export/excel?bulan=${filterMonth}&tahun=${filterYear}`,
         {
           headers: { Authorization: `Bearer ${token}` },
           responseType: "blob",
@@ -138,7 +138,7 @@ const Tagihan = () => {
   const handleCetakNota = async (usageId) => {
     try {
       setLoading(true);
-      const res = await axios.get(`http://localhost:5000/api/tagihan/nota/${usageId}`, {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/tagihan/nota/${usageId}`, {
         headers: { Authorization: `Bearer ${token}` },
         responseType: "blob",
       });

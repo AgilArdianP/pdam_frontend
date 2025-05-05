@@ -38,8 +38,8 @@ const Customers = () => {
     setIsLoading(true);
     try {
       const url = query
-        ? `http://localhost:5000/api/pelanggan/search?query=${query}`
-        : "http://localhost:5000/api/pelanggan";
+        ? `${import.meta.env.VITE_API_URL}/api/pelanggan/search?query=${query}`
+        : `${import.meta.env.VITE_API_URL}/api/pelanggan`;
       const res = await axios.get(url, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -73,12 +73,12 @@ const Customers = () => {
     try {
       if (editingId) {
         // Update pelanggan
-        await axios.put(`http://localhost:5000/api/pelanggan/${editingId}`, formData, {
+        await axios.put(`${import.meta.env.VITE_API_URL}/api/pelanggan/${editingId}`, formData, {
           headers: { Authorization: `Bearer ${token}` },
         });
       } else {
         // Tambah pelanggan baru
-        await axios.post("http://localhost:5000/api/pelanggan", formData, {
+        await axios.post(`${import.meta.env.VITE_API_URL}/api/pelanggan`, formData, {
           headers: { Authorization: `Bearer ${token}` },
         });
       }
@@ -100,7 +100,7 @@ const Customers = () => {
     
     setIsLoading(true);
     try {
-      await axios.delete(`http://localhost:5000/api/pelanggan/${id}`, {
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/pelanggan/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       fetchCustomers();

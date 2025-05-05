@@ -55,7 +55,7 @@ const Payments = () => {
     setIsLoading(true);
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/penggunaan/history?bulan=${month}&tahun=${year}`,
+        `${import.meta.env.VITE_API_URL}/api/penggunaan/history?bulan=${month}&tahun=${year}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -74,7 +74,7 @@ const Payments = () => {
     setHistoryLoading(true);
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/pembayaran/history?bulan=${month}&tahun=${year}`,
+        `${import.meta.env.VITE_API_URL}/api/pembayaran/history?bulan=${month}&tahun=${year}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setPaymentHistory(res.data);
@@ -139,7 +139,7 @@ const Payments = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      await axios.post("http://localhost:5000/api/pembayaran", paymentForm, {
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/pembayaran`, paymentForm, {
         headers: { Authorization: `Bearer ${token}` },
       });
       showMessage("Pembayaran berhasil dicatat dan tagihan telah dipindahkan ke riwayat", "success");

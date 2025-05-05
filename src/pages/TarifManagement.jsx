@@ -52,7 +52,7 @@ const TarifManagement = () => {
   const fetchTarifs = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("http://localhost:5000/api/tarif_penggunaan", {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/tarif_penggunaan`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setTarifs(res.data);
@@ -92,7 +92,7 @@ const TarifManagement = () => {
       if (editingId) {
         // Update tarif yang sudah ada
         await axios.put(
-          `http://localhost:5000/api/tarif_penggunaan/${id}`,
+          `${import.meta.env.VITE_API_URL}/api/tarif_penggunaan/${id}`,
           formData,
           { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -100,7 +100,7 @@ const TarifManagement = () => {
       } else {
         // Buat tarif baru
         await axios.post(
-          "http://localhost:5000/api/tarif_penggunaan",
+          `${import.meta.env.VITE_API_URL}/api/tarif_penggunaan`,
           formData,
           { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -147,7 +147,7 @@ const TarifManagement = () => {
   const handleDelete = async (id) => {
     if (window.confirm("Apakah Anda yakin ingin menghapus tarif ini?")) {
       try {
-        await axios.delete(`http://localhost:5000/api/tarif_penggunaan/${id}`, {
+        await axios.delete(`${import.meta.env.VITE_API_URL}/api/tarif_penggunaan/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         showNotification("Tarif berhasil dihapus");

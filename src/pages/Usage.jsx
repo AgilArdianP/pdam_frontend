@@ -41,7 +41,7 @@ const Usage = () => {
   useEffect(() => {
     const fetchPelanggan = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/pelanggan", {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/pelanggan`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setPelangganList(res.data);
@@ -131,7 +131,7 @@ const Usage = () => {
     if (formData.foto) data.append("foto", formData.foto);
     
     try {
-      const res = await axios.post("http://localhost:5000/api/penggunaan", data, {
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/penggunaan`, data, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",

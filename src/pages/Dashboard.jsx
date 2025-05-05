@@ -60,7 +60,7 @@ const Dashboard = () => {
       try {
         // Fetch ringkasan data utama
         const statsRes = await axios.get(
-          `http://localhost:5000/api/dashboard/stats?bulan=${bulan}&tahun=${tahun}`,
+          `${import.meta.env.VITE_API_URL}/api/dashboard/stats?bulan=${bulan}&tahun=${tahun}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -71,7 +71,7 @@ const Dashboard = () => {
 
         // Fetch data penggunaan air per bulan
         const monthlyUsageRes = await axios.get(
-          `http://localhost:5000/api/dashboard/monthly-usage?tahun=${tahun}`,
+          `${import.meta.env.VITE_API_URL}/api/dashboard/monthly-usage?tahun=${tahun}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

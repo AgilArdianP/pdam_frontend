@@ -15,7 +15,7 @@ const BackupRestore = () => {
     setBackupLoading(true);
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/backup/backup",
+        `${import.meta.env.VITE_API_URL}/api/backup/backup`,
         {
           headers: { Authorization: `Bearer ${token}` },
           responseType: "blob",
@@ -61,7 +61,7 @@ const BackupRestore = () => {
       formData.append("file", restoreFile);
 
       const response = await axios.post(
-        "http://localhost:5000/api/backup/restore",
+        `${import.meta.env.VITE_API_URL}/api/backup/restore`,
         formData,
         {
           headers: {
