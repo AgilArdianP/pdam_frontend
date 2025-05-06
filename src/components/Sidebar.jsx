@@ -25,6 +25,7 @@ const Sidebar = () => {
     { name: "Pembayaran", path: "/payments", icon: <CreditCard size={20} /> },
     { name: "Tagihan", path: "/tagihan", icon: <FileText size={20} /> },
     { name: "Backup", path: "/backup", icon: <Database size={20} /> },
+    { name: "Tarif Management", path: "/tarifmanagement", icon: <Database size={20} />},
   ];
 
   // Mendeteksi perubahan ukuran layar
