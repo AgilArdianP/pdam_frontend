@@ -170,21 +170,7 @@ const Customers = () => {
 
   return (
     <div className="flex h-screen w-screen bg-gray-50 overflow-hidden">
-      {/* Mobile sidebar overlay */}
-      {sidebarOpen && (
-        <div 
-          className="fixed inset-0 bg-black bg-opacity-50 z-20 lg:hidden"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
-      
-      {/* Sidebar - hidden on mobile, shown when sidebarOpen is true */}
-      <div className={`fixed inset-y-0 left-0 z-30 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 ${
-        sidebarOpen ? "translate-x-0" : "-translate-x-full"
-      }`}>
-        <Sidebar />
-      </div>
-
+      <Sidebar />
       <div className="flex-1 flex flex-col w-full">
         <Navbar />
 
