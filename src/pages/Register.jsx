@@ -253,7 +253,7 @@ const Register = () => {
                                 required
                             />
                             <label htmlFor="terms" className="ml-2 block text-sm text-gray-700">
-                                Saya menyetujui <a href="#" className="text-blue-600 hover:text-blue-800">Syarat dan Ketentuan</a>
+                                Saya menyetujui <a href="/termsofservice" className="text-blue-600 hover:text-blue-800">Syarat dan Ketentuan</a>
                             </label>
                         </div>
                         
