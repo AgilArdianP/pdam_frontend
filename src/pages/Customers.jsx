@@ -186,18 +186,7 @@ const Customers = () => {
       </div>
 
       <div className="flex-1 flex flex-col w-full">
-        {/* Navbar with hamburger menu */}
-        <div className="bg-white shadow-sm z-10">
-          <div className="flex items-center px-4 h-16">
-            <button 
-              onClick={toggleSidebar}
-              className="mr-4 text-gray-600 lg:hidden focus:outline-none"
-            >
-              <Menu size={24} />
-            </button>
-            <Navbar />
-          </div>
-        </div>
+        <Navbar />
 
         <div className="p-4 md:p-6 flex-1 overflow-y-auto">
           <div className="flex flex-col space-y-4 md:space-y-0 md:flex-row md:items-center justify-between mb-6">
