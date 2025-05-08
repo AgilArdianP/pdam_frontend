@@ -12,7 +12,9 @@ import {
   Filter, 
   RefreshCw,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Menu,
+  Info
 } from "lucide-react";
 
 const Customers = () => {
@@ -27,6 +29,7 @@ const Customers = () => {
   const [editingId, setEditingId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const token = localStorage.getItem("token");
   
   // Pagination state
@@ -160,24 +163,55 @@ const Customers = () => {
     }
   };
 
+  // Toggle sidebar for mobile
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
+
   return (
-    <div className="flex h-screen w-screen bg-gray-50">
-      <Sidebar />
-      <div className="flex-1 flex flex-col">
-        <Navbar />
-        <div className="p-6 flex-1">
-          <div className="flex flex-col md:flex-row md:items-center justify-between mb-6">
+    <div className="flex h-screen w-screen bg-gray-50 overflow-hidden">
+      {/* Mobile sidebar overlay */}
+      {sidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-20 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+      
+      {/* Sidebar - hidden on mobile, shown when sidebarOpen is true */}
+      <div className={`fixed inset-y-0 left-0 z-30 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 ${
+        sidebarOpen ? "translate-x-0" : "-translate-x-full"
+      }`}>
+        <Sidebar />
+      </div>
+
+      <div className="flex-1 flex flex-col w-full">
+        {/* Navbar with hamburger menu */}
+        <div className="bg-white shadow-sm z-10">
+          <div className="flex items-center px-4 h-16">
+            <button 
+              onClick={toggleSidebar}
+              className="mr-4 text-gray-600 lg:hidden focus:outline-none"
+            >
+              <Menu size={24} />
+            </button>
+            <Navbar />
+          </div>
+        </div>
+
+        <div className="p-4 md:p-6 flex-1 overflow-y-auto">
+          <div className="flex flex-col space-y-4 md:space-y-0 md:flex-row md:items-center justify-between mb-6">
             <div>
-              <h2 className="text-2xl font-bold text-gray-800">Pelanggan</h2>
+              <h2 className="text-xl md:text-2xl font-bold text-gray-800">Pelanggan</h2>
               <p className="text-gray-500 text-sm mt-1">Kelola data pelanggan PDAM Desa</p>
             </div>
-            <div className="mt-4 md:mt-0 flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2">
               <button
                 onClick={() => {
                   resetForm();
                   setShowForm(!showForm);
                 }}
-                className={`flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                className={`flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                   showForm 
                     ? "bg-gray-200 text-gray-700 hover:bg-gray-300" 
                     : "bg-blue-600 text-white hover:bg-blue-700"
@@ -185,136 +219,136 @@ const Customers = () => {
               >
                 {showForm ? (
                   <>
-                    <X size={16} className="mr-2" />
-                    Tutup Form
+                    <X size={16} className="mr-1" />
+                    <span className="hidden xs:inline">Tutup Form</span>
                   </>
                 ) : (
                   <>
-                    <UserPlus size={16} className="mr-2" />
-                    Tambah Pelanggan
+                    <UserPlus size={16} className="mr-1" />
+                    <span className="hidden xs:inline">Tambah</span><span className="inline xs:hidden">+</span>
                   </>
                 )}
               </button>
               <button
                 onClick={() => fetchCustomers()}
-                className="flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50"
+                className="flex items-center px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50"
               >
-                <RefreshCw size={16} className="mr-2" />
-                Refresh
+                <RefreshCw size={16} className="mr-1" />
+                <span className="hidden xs:inline">Refresh</span>
               </button>
             </div>
           </div>
 
-          <div className="bg-white p-4 rounded-lg shadow-sm mb-6">
-            <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-3">
+          <div className="bg-white p-3 md:p-4 rounded-lg shadow-sm mb-4 md:mb-6">
+            <form onSubmit={handleSearch} className="flex flex-col xs:flex-row gap-2">
               <div className="relative flex-1">
                 <input
                   type="text"
-                  placeholder="Cari berdasarkan nama atau alamat..."
+                  placeholder="Cari nama/alamat..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full pl-8 pr-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
-                <Search size={18} className="absolute left-3 top-2.5 text-gray-400" />
+                <Search size={16} className="absolute left-2.5 top-2.5 text-gray-400" />
               </div>
               <div className="flex gap-2">
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center"
+                  className="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center text-sm"
                 >
-                  <Search size={18} className="mr-2" />
-                  Cari
+                  <Search size={16} className="mr-1" />
+                  <span>Cari</span>
                 </button>
                 <button
                   type="button"
-                  className="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors flex items-center"
+                  className="px-3 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors flex items-center text-sm"
                 >
-                  <Filter size={18} className="mr-2" />
-                  Filter
+                  <Filter size={16} className="hidden xs:block xs:mr-1" />
+                  <span>Filter</span>
                 </button>
               </div>
             </form>
           </div>
 
           {showForm && (
-            <div id="customer-form" className="bg-white p-6 rounded-lg shadow-sm mb-6 border-l-4 border-blue-500">
+            <div id="customer-form" className="bg-white p-4 md:p-6 rounded-lg shadow-sm mb-4 md:mb-6 border-l-4 border-blue-500">
               <h3 className="text-lg font-semibold mb-4 text-gray-800 flex items-center">
                 {editingId ? (
                   <>
-                    <Edit2 size={20} className="mr-2 text-blue-600" />
+                    <Edit2 size={18} className="mr-2 text-blue-600" />
                     Edit Pelanggan
                   </>
                 ) : (
                   <>
-                    <UserPlus size={20} className="mr-2 text-blue-600" />
+                    <UserPlus size={18} className="mr-2 text-blue-600" />
                     Tambah Pelanggan Baru
                   </>
                 )}
               </h3>
-              <form onSubmit={handleFormSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-2">
+              <form onSubmit={handleFormSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-1">
                   <label className="block text-sm font-medium text-gray-700">Nama</label>
                   <input
                     type="text"
                     name="nama"
                     value={formData.nama}
                     onChange={handleFormChange}
-                    className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full border border-gray-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Masukkan nama pelanggan"
                     required
                   />
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-1">
                   <label className="block text-sm font-medium text-gray-700">Alamat</label>
                   <input
                     type="text"
                     name="alamat"
                     value={formData.alamat}
                     onChange={handleFormChange}
-                    className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full border border-gray-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Masukkan alamat lengkap"
                     required
                   />
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-1">
                   <label className="block text-sm font-medium text-gray-700">Jenis Pelayanan</label>
                   <select
                     name="jenis_pelayanan"
                     value={formData.jenis_pelayanan}
                     onChange={handleFormChange}
-                    className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full border border-gray-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     required
                   >
                     <option value="Reguler">Reguler</option>
                     <option value="Subsidi">Subsidi</option>
                   </select>
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-1">
                   <label className="block text-sm font-medium text-gray-700">Keterangan</label>
                   <input
                     type="text"
                     name="keterangan"
                     value={formData.keterangan}
                     onChange={handleFormChange}
-                    className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full border border-gray-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Keterangan tambahan (opsional)"
                   />
                 </div>
-                <div className="sm:col-span-2 flex items-center gap-3 pt-2">
+                <div className="md:col-span-2 flex items-center gap-2 pt-2">
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center"
+                    className="bg-blue-600 text-white px-4 py-2 text-sm rounded-lg hover:bg-blue-700 transition-colors flex items-center"
                   >
-                    <Check size={18} className="mr-2" />
-                    {editingId ? "Update Pelanggan" : "Simpan Pelanggan"}
+                    <Check size={16} className="mr-1" />
+                    {editingId ? "Update" : "Simpan"}
                   </button>
                   <button
                     type="button"
                     onClick={resetForm}
-                    className="bg-gray-200 text-gray-700 px-5 py-2 rounded-lg hover:bg-gray-300 transition-colors flex items-center"
+                    className="bg-gray-200 text-gray-700 px-4 py-2 text-sm rounded-lg hover:bg-gray-300 transition-colors flex items-center"
                   >
-                    <X size={18} className="mr-2" />
+                    <X size={16} className="mr-1" />
                     Batal
                   </button>
                 </div>
@@ -324,9 +358,9 @@ const Customers = () => {
 
           {/* Loading indicator */}
           {isLoading && (
-            <div className="text-center py-4">
-              <div className="inline-flex items-center px-4 py-2 bg-blue-50 text-blue-600 rounded-lg">
-                <svg className="animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <div className="text-center py-3">
+              <div className="inline-flex items-center px-3 py-2 bg-blue-50 text-blue-600 rounded-lg text-sm">
+                <svg className="animate-spin h-4 w-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
@@ -335,35 +369,36 @@ const Customers = () => {
             </div>
           )}
 
-          {/* Tabel data pelanggan */}
+          {/* Card view untuk mobile, table untuk desktop */}
           <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-            <div className="overflow-x-auto">
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Alamat</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jenis Pelayanan</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Keterangan</th>
-                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Alamat</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jenis Pelayanan</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Keterangan</th>
+                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {customers.length === 0 ? (
                     <tr>
-                      <td className="px-6 py-4 text-center text-gray-500 text-sm" colSpan="5">
+                      <td className="px-4 py-4 text-center text-gray-500 text-sm" colSpan="5">
                         {isLoading ? "Memuat data..." : "Tidak ada data pelanggan"}
                       </td>
                     </tr>
                   ) : (
                     currentCustomers.map((customer) => (
                       <tr key={customer.id} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap">
+                        <td className="px-4 py-3 whitespace-nowrap">
                           <div className="font-medium text-gray-900">{customer.nama}</div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-gray-700">{customer.alamat}</td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        <td className="px-4 py-3 whitespace-nowrap text-gray-700">{customer.alamat}</td>
+                        <td className="px-4 py-3 whitespace-nowrap">
+                          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
                             customer.jenis_pelayanan === "Reguler" 
                               ? "bg-blue-100 text-blue-800" 
                               : "bg-green-100 text-green-800"
@@ -371,22 +406,22 @@ const Customers = () => {
                             {customer.jenis_pelayanan}
                           </span>
                         </td>
-                        <td className="px-6 py-4 text-gray-700">{customer.keterangan || "-"}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-center">
+                        <td className="px-4 py-3 text-gray-700">{customer.keterangan || "-"}</td>
+                        <td className="px-4 py-3 whitespace-nowrap text-center">
                           <div className="flex items-center justify-center space-x-2">
                             <button
                               onClick={() => handleEdit(customer)}
                               className="text-blue-600 hover:text-blue-800 p-1 rounded-full hover:bg-blue-100"
                               title="Edit"
                             >
-                              <Edit2 size={18} />
+                              <Edit2 size={16} />
                             </button>
                             <button
                               onClick={() => handleDelete(customer.id, customer.nama)}
                               className="text-red-600 hover:text-red-800 p-1 rounded-full hover:bg-red-100"
                               title="Hapus"
                             >
-                              <Trash2 size={18} />
+                              <Trash2 size={16} />
                             </button>
                           </div>
                         </td>
@@ -396,53 +431,114 @@ const Customers = () => {
                 </tbody>
               </table>
             </div>
-            {customers.length > 0 && (
-              <div className="px-6 py-3 flex flex-col sm:flex-row sm:items-center justify-between border-t border-gray-200 bg-gray-50">
-                <div className="text-sm text-gray-500 mb-2 sm:mb-0">
-                  Menampilkan {indexOfFirstCustomer + 1}-{Math.min(indexOfLastCustomer, customers.length)} dari {customers.length} pelanggan
+
+            {/* Mobile Card View */}
+            <div className="md:hidden divide-y divide-gray-200">
+              {customers.length === 0 ? (
+                <div className="px-4 py-4 text-center text-gray-500 text-sm">
+                  {isLoading ? "Memuat data..." : "Tidak ada data pelanggan"}
                 </div>
-                <div className="flex items-center space-x-2">
+              ) : (
+                currentCustomers.map((customer) => (
+                  <div key={customer.id} className="p-4 hover:bg-gray-50">
+                    <div className="flex justify-between items-start mb-2">
+                      <div className="font-medium text-gray-900">{customer.nama}</div>
+                      <div className="flex space-x-1">
+                        <button
+                          onClick={() => handleEdit(customer)}
+                          className="text-blue-600 hover:text-blue-800 p-1 rounded-full hover:bg-blue-100"
+                          title="Edit"
+                        >
+                          <Edit2 size={16} />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(customer.id, customer.nama)}
+                          className="text-red-600 hover:text-red-800 p-1 rounded-full hover:bg-red-100"
+                          title="Hapus"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    </div>
+                    <div className="text-sm text-gray-700 mb-1">
+                      <span className="font-medium text-gray-600">Alamat:</span> {customer.alamat}
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                        customer.jenis_pelayanan === "Reguler" 
+                          ? "bg-blue-100 text-blue-800" 
+                          : "bg-green-100 text-green-800"
+                      }`}>
+                        {customer.jenis_pelayanan}
+                      </span>
+                      {customer.keterangan && (
+                        <div className="text-xs text-gray-600 flex items-center">
+                          <Info size={12} className="mr-1" />
+                          {customer.keterangan}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {customers.length > 0 && (
+              <div className="px-4 py-3 flex flex-col xs:flex-row xs:items-center justify-between border-t border-gray-200 bg-gray-50">
+                <div className="text-xs text-gray-500 mb-2 xs:mb-0">
+                  {indexOfFirstCustomer + 1}-{Math.min(indexOfLastCustomer, customers.length)} dari {customers.length} pelanggan
+                </div>
+                <div className="flex items-center justify-center xs:justify-end space-x-1">
                   <button 
                     onClick={prevPage} 
                     disabled={currentPage === 1}
-                    className={`px-3 py-1 border flex items-center ${
+                    className={`px-2 py-1 border flex items-center ${
                       currentPage === 1 
                         ? "border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed" 
                         : "border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
-                    } rounded text-sm`}
+                    } rounded text-xs`}
                   >
-                    <ChevronLeft size={16} className="mr-1" />
-                    Sebelumnya
+                    <ChevronLeft size={14} className="mr-1" />
+                    <span className="hidden xs:inline">Sebelumnya</span>
                   </button>
                   
-                  {/* Page numbers */}
+                  {/* Page numbers - show fewer on mobile */}
                   <div className="flex items-center space-x-1">
-                    {[...Array(totalPages).keys()].map(number => (
-                      <button
-                        key={number + 1}
-                        onClick={() => paginate(number + 1)}
-                        className={`px-3 py-1 border rounded text-sm ${
-                          currentPage === number + 1
-                            ? "border-blue-500 bg-blue-50 text-blue-600"
-                            : "border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
-                        }`}
-                      >
-                        {number + 1}
-                      </button>
-                    ))}
+                    {[...Array(totalPages).keys()]
+                      .filter(num => {
+                        // On mobile, show fewer page numbers
+                        if (window.innerWidth < 640) {
+                          return num + 1 === 1 || num + 1 === totalPages || 
+                                 (num + 1 >= currentPage - 1 && num + 1 <= currentPage + 1);
+                        }
+                        return true;
+                      })
+                      .map(number => (
+                        <button
+                          key={number + 1}
+                          onClick={() => paginate(number + 1)}
+                          className={`px-2 py-1 border rounded text-xs ${
+                            currentPage === number + 1
+                              ? "border-blue-500 bg-blue-50 text-blue-600"
+                              : "border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+                          }`}
+                        >
+                          {number + 1}
+                        </button>
+                      ))}
                   </div>
                   
                   <button 
                     onClick={nextPage} 
                     disabled={currentPage === totalPages}
-                    className={`px-3 py-1 border flex items-center ${
+                    className={`px-2 py-1 border flex items-center ${
                       currentPage === totalPages 
                         ? "border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed" 
                         : "border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
-                    } rounded text-sm`}
+                    } rounded text-xs`}
                   >
-                    Selanjutnya
-                    <ChevronRight size={16} className="ml-1" />
+                    <span className="hidden xs:inline">Selanjutnya</span>
+                    <ChevronRight size={14} className="ml-1" />
                   </button>
                 </div>
               </div>
