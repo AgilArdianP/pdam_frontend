@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Login from "./pages/Login";
+import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import Customers from "./pages/Customers";
 import Usage from "./pages/Usage";
@@ -27,6 +28,10 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+      <Route 
+          path="/register"
+          element={<Register />}
+        />
         <Route path="/login" element={<Login setAuth={setAuth} />} />
         <Route
           path="/"
