@@ -202,13 +202,13 @@ const Login = ({ setAuth }) => {
 
                     <div className="mt-12 border-t border-gray-200 pt-6">
                         <div className="flex justify-center space-x-4">
-                            <a href="#" className="text-gray-500 hover:text-gray-700">
+                            <a href="/termsofservice" className="text-gray-500 hover:text-gray-700">
                                 Terms of Service
                             </a>
-                            <a href="#" className="text-gray-500 hover:text-gray-700">
+                            <a href="/privacypolice" className="text-gray-500 hover:text-gray-700">
                                 Privacy Policy
                             </a>
-                            <a href="#" className="text-gray-500 hover:text-gray-700">
+                            <a href="/contact" className="text-gray-500 hover:text-gray-700">
                                 Contact
                             </a>
                         </div>

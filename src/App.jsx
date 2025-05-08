@@ -9,6 +9,9 @@ import Payments from "./pages/Payments";
 import Tagihan from "./pages/Tagihan";
 import Backup from "./pages/Backup";
 import TarifManagement from "./pages/TarifManagement";
+import TermsOfService from "./pages/TermsOfService";
+import PrivacyPolice from "./pages/PrivacyPolice";
+import Contact from "./pages/Contact";
 
 function App() {
   const [auth, setAuth] = useState(false);
@@ -28,6 +31,18 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route 
+          path="/termsofservice"
+          element={<TermsOfService />}
+        />
+        <Route 
+          path="/privacypolice"
+          element={<PrivacyPolice />}
+        />
+        <Route 
+          path="/contact"
+          element={<Contact />}
+        />
       <Route 
           path="/register"
           element={<Register />}
